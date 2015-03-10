@@ -74,17 +74,33 @@
         
         element.addEventListener("paste", function(event) {
             event.preventDefault();
-            
-            _self.raw_text = _get_text(event);
-            
-            if(_self.raw_text === undefined){
-                console.warn("Couldn't get raw text.");
+
+            if($self.attr("contentEditable") != "true"){
+                console.warn("PastePlainText: Element is not in edit mode");
                 return false;
             }
-            
-            _self.plain_text = _gen_plain_text();
-            
-            _set_text();
+
+            try { _self.raw_text = _get_text(event); }
+            catch(e) {
+                console.warn("PastePlainText: Failed to run _get_text");
+                return false;
+            }
+
+            if(_self.raw_text === undefined){
+                console.warn("PastePlainText: Couldn't get raw text.");
+                return false;
+            }
+
+            try { _self.plain_text = _gen_plain_text(); }
+            catch(e) {
+                console.warn("PastePlainText: Failed to run _gen_plain_text");
+                return false;
+            }
+
+            try { _set_text(); }
+            catch(e) {
+                console.warn("PastePlainText: Failed to run _set_text");
+            }
         });
     };
         
